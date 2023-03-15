@@ -18,9 +18,6 @@ headersD = {'Content-Type': 'application/json'}
 ndata = {'username':'Helpdesk','content': 'No Ticket'}
 
 
-# Use a global variable to store the ID of the last ticket that was sent
-# last_ticket_id = None
-
 
 def main():
     #replace with your zammad url
@@ -32,13 +29,6 @@ def main():
     jsonData = json.loads((noti.content).decode('utf-8').replace("'",'"'))
     print (jsonData)
     
-    # if jsonData == None:
-    # #if jsonData = [] or jsonData = None:
-
-
-    #     print("No new Ticket")
-    # else:
-    #     print("New Tickets")
 
     if not jsonData:
         #do nothing, break out of the loop
