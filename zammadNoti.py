@@ -1,3 +1,15 @@
+#!/usr/bin/python3
+
+# Script name: zammadNoti.py
+# Author: Ammar
+# Date: 16/03/2023
+# Description: This script will check for new ticket in zammad, and send notification to discord
+# Version: 1.0
+# Python Version: 3.6.9
+# Tested Os: Ubuntu 18.04.06 LTS
+# Zammad Version: 5.0.0-1613651200.1b3e1f5f.bionic
+
+
 import requests
 import json
 import time
@@ -17,7 +29,7 @@ headersD = {'Content-Type': 'application/json'}
 
 ndata = {'username':'Helpdesk','content': 'No Ticket'}
 
-
+global last_ticket_id 
 
 def main():
     #replace with your zammad url
@@ -27,37 +39,11 @@ def main():
 
     
     jsonData = json.loads((noti.content).decode('utf-8').replace("'",'"'))
-    print (jsonData)
+    # print (jsonData)
     
-
-    if not jsonData:
-        #do nothing, break out of the loop
-        print("No new Ticket")
-        return
-
-        
-        # requests.post(discordUrl, headers=headersD, data=json.dumps(ndata))
-        
-    else:
-        
-        link_id = jsonData[0].get('o_id')
-        apiTicket = zammadUrl + '/api/v1/tickets/' + str(link_id)
-        ticketJson = requests.get(apiTicket, headers=headers)
-        ticketJson = json.loads((ticketJson.content).decode('utf-8').replace("'",'"'))
-        
-
-        state = ticketJson.get('state_id')
-            #if state is 4 , it means ticket is closed, do not send notification, and if 2 also do not send notification
-        if state == 4 or state == 2:
-            print("Ticket is closed or been opened")
-            return
-
-        # global last_ticket_id
-        # if link_id == last_ticket_id:
-        #     print("Already sent notification for this ticket")
-        #     return
-        
-        # last_ticket_id = link_id
+      
+    def sendNotification():
+              
 
 
         link = zammadUrl+"/#ticket/zoom/" + str(link_id)
@@ -120,8 +106,51 @@ def main():
         #     print(updata)
         #     # updata['content'] = updata['content'] + jsonData[0].get('created_at')
         #     requests.post(discordUrl, headers=headersD, data=json.dumps(updata))
-        # else:
+        else:
+            return
+
+    if not jsonData:
+        #do nothing, break out of the loop
+        print("No new Ticket")
+        return
+
+    else:
+        
+        link_id = jsonData[0].get('o_id')
+        apiTicket = zammadUrl + '/api/v1/tickets/' + str(link_id)
+        ticketJson = requests.get(apiTicket, headers=headers)
+        ticketJson = json.loads((ticketJson.content).decode('utf-8').replace("'",'"'))
+        
+
+        state = ticketJson.get('state_id')
+            #if state is 4 , it means ticket is closed, do not send notification, and if 2 also do not send notification
+        if state == 4 or state == 2:
+            print("Ticket is closed or been opened")
+
+            #if it created by default and state is 2, send notification just one time, track using last_ticket_id
+            if state == 2:
+                if link_id == last_ticket_id:
+                    print("Already sent notification for this ticket")
+                    return
+                else:
+                    last_ticket_id = link_id
+                    sendNotification()
+
+                    
+                
+                
+
+            return
+        
+        else:
+            last_ticket_id = link_id
+            sendNotification()
+
+        # global last_ticket_id
+        # if link_id == last_ticket_id:
+        #     print("Already sent notification for this ticket")
         #     return
+        
   
 
 while True:
