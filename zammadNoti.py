@@ -139,10 +139,9 @@ def main():
                     print("Already sent notification for this ticket")
                     return
                 else:
-                    print(link_id)
+                    
                     last_ticket_id = link_id
-                    print("nnniii")
-                    print(last_ticket_id)
+                    
                     sendNotification()
 
                     
