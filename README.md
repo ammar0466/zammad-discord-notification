@@ -1,5 +1,5 @@
 # Zammad Discord Notification
- Send Continuos notify until it opened.
+ Send continuous notifications until it is opened.
  
  
  **Installation :**
