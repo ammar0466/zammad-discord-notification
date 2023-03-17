@@ -41,7 +41,7 @@ def main():
 
     
     jsonData = json.loads((noti.content).decode('utf-8').replace("'",'"'))
-    print (jsonData)
+    # print (jsonData)
     
       
     def sendNotification():
@@ -69,7 +69,7 @@ def main():
             #if 'seen' is flase
         # if jsonData[0].get('seen') == False:
         #change to if jsonData[0].get('type') == 'create':
-        if jsonData[0].get('type') == 'create':
+        if jsonData[0]:
 
             
             #"created_at": "2022-11-22T03:27:55.548Z"
