@@ -29,9 +29,11 @@ headersD = {'Content-Type': 'application/json'}
 
 ndata = {'username':'Helpdesk','content': 'No Ticket'}
 
-global last_ticket_id 
+
+last_ticket_id = None
 
 def main():
+    global last_ticket_id 
     #replace with your zammad url
     ZammadNoti = zammadUrl + "/api/v1/online_notifications?expand=true"
     headers = {'Content-Type': 'application/json','Authorization': os.getenv('ZAMMADTOKEN')}
@@ -39,7 +41,7 @@ def main():
 
     
     jsonData = json.loads((noti.content).decode('utf-8').replace("'",'"'))
-    # print (jsonData)
+    print (jsonData)
     
       
     def sendNotification():
@@ -65,7 +67,10 @@ def main():
         
 
             #if 'seen' is flase
-        if jsonData[0].get('seen') == False:
+        # if jsonData[0].get('seen') == False:
+        #change to if jsonData[0].get('type') == 'create':
+        if jsonData[0].get('type') == 'create':
+
             
             #"created_at": "2022-11-22T03:27:55.548Z"
             #append created_at to data
@@ -80,6 +85,7 @@ def main():
                         
             requests.post(discordUrl, headers=headersD, data=json.dumps(data))
             print("New Tickets")
+            
 
         #15/03/2023 
         #dont need this anymore, since we use ticket state to check if ticket is closed or not
@@ -133,7 +139,10 @@ def main():
                     print("Already sent notification for this ticket")
                     return
                 else:
+                    print(link_id)
                     last_ticket_id = link_id
+                    print("nnniii")
+                    print(last_ticket_id)
                     sendNotification()
 
                     
